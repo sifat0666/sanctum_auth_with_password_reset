@@ -51,4 +51,10 @@ class PasswordResetController extends Controller
         ], 200);
 
     }
+
+
+    public function reset_password(Request $request)
+    {
+
+    }
 }
