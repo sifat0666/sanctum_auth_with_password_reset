@@ -53,8 +53,37 @@ class PasswordResetController extends Controller
     }
 
 
-    public function reset_password(Request $request)
+    public function reset_password(Request $request, $token)
     {
 
+
+        $formatted = Carbon::now()->subMinutes(1)->toDateTimeString();
+        PasswordReset::where('created_at', '<=', $formatted)->delete();
+
+        $request->validate([
+            'password' => 'required'
+        ]);
+
+        $passwordreset = PasswordReset::where('token', $token)->first();
+
+        if (!$passwordreset) {
+            return response([
+                'message' => 'Token doesnt exists',
+                'status' => 'failed'
+            ], 404);
+        }
+
+        $user = User::where('email', $passwordreset->email)->first();
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        //delete password after reseting
+        PasswordReset::where('token', $token)->delete();
+
+        return response([
+            'message' => 'Password Reset Success',
+            'status' => 'success'
+        ], 200);
     }
 }

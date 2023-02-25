@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/send-password-reset-email', [PasswordResetController::class, 'set_reset_password_email']);
+Route::post('/reset-password/{token}', [PasswordResetController::class, 'reset_password']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [UserController::class, 'logout']);
